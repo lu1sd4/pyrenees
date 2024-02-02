@@ -1,0 +1,24 @@
+import = ["/home/lu1sd4/.config/alacritty/themes/catppuccin-macchiato.toml"]
+
+[font]
+size = 10
+
+[font.bold]
+family = "FiraCode"
+style = "Bold"
+
+[font.bold_italic]
+family = "FiraCode"
+style = "Bold Italic"
+
+[font.italic]
+family = "FiraCode"
+style = "Italic"
+
+[font.normal]
+family = "FiraCode"
+style = "Regular"
+
+[window.padding]
+x = 10
+y = 10

@@ -1,0 +1,2 @@
+#!/bin/sh
+0x0 $1 | xclip -selection c

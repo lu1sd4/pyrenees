@@ -1,0 +1,33 @@
+import = ["/home/lu1sd4/.config/alacritty/themes/catppuccin-macchiato.toml"]
+
+[env]
+TERM = "xterm-256color"
+
+[font]
+size = 10.5
+
+[font.bold]
+family = "Terminess Nerd Font Mono"
+style = "Bold"
+
+[font.bold_italic]
+family = "Terminess Nerd Font Mono"
+style = "Bold Italic"
+
+[font.italic]
+family = "Terminess Nerd Font Mono"
+style = "Italic"
+
+[font.normal]
+family = "Terminess Nerd Font Mono"
+style = "Regular"
+
+[shell]
+program = "/usr/bin/zsh"
+
+[window]
+decorations = "none"
+dynamic_padding = true
+
+[window.padding]
+x = 2

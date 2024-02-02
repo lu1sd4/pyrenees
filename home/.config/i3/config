@@ -1,0 +1,275 @@
+# window borders for gaps
+for_window [class=".*"] border pixel 1
+
+# floating terminal
+for_window [class="Alacritty" instance="floating"] floating enable 
+for_window [class="floating"] floating enable 
+
+# launcher terminal
+for_window [title="^launcher$"] floating enable, border pixel
+
+# gaps
+# no gaps one window
+smart_borders on
+
+# win key
+set $mod Mod4
+
+# alt
+set $mod2 Mod1
+
+# other variables used in this config file
+# $TERMINAL and others defined in ~/.zsh/.vars
+
+set $shell zsh
+set $term --no-startup-id $TERMINAL
+set $term_float --no-startup-id $TERMINAL -o window.dimensions.lines=40 -o window.dimensions.columns=120
+set $shutdown sudo -A shutdown -h now
+set $reboot sudo -A reboot
+set $python /home/lu1sd4/.pyenv/shims/python
+
+font pango:FuraCode Nerd Font 12px
+
+# colors
+
+set $rosewater #f4dbd6
+set $flamingo  #f0c6c6
+set $pink      #f5bde6
+set $mauve     #c6a0f6
+set $red       #ed8796
+set $maroon    #ee99a0
+set $peach     #f5a97f
+set $green     #a6da95
+set $teal      #8bd5ca
+set $sky       #91d7e3
+set $sapphire  #7dc4e4
+set $blue      #8aadf4
+set $lavender  #b7bdf8
+set $text      #cad3f5
+set $subtext1  #b8c0e0
+set $subtext0  #a5adcb
+set $overlay2  #939ab7
+set $overlay1  #8087a2
+set $overlay0  #6e738d
+set $surface2  #5b6078
+set $surface1  #494d64
+set $surface0  #363a4f
+set $base      #24273a
+set $mantle    #1e2030
+set $crust     #181926
+
+set               $transparent  #00000000
+set               $white        #FFFFFF
+
+# target                 title     bg    text   indicator  border
+client.focused           $lavender $base $text  $rosewater $lavender
+client.focused_inactive  $overlay0 $base $text  $rosewater $overlay0
+client.unfocused         $overlay0 $base $text  $rosewater $overlay0
+client.urgent            $peach    $base $peach $overlay0  $peach
+client.placeholder       $overlay0 $base $text  $overlay0  $overlay0
+client.background        $base
+
+# startup applications
+
+# automount usb stuff
+exec --no-startup-id udiskie
+
+# background and color scheme
+exec_always --no-startup-id xrfb -merge ~/macchiato.Xresources
+exec_always --no-startup-id feh --bg-scale ~/.config/bg/clouds.jpg
+
+
+# hide mouse
+exec --no-startup-id unclutter
+
+# dunst for notifications
+exec --no-startup-id dunst
+
+# bindings
+
+# non-letter bindings
+
+# mouse+$mod to drag floating windows with the mouse
+floating_modifier $mod
+
+# start a terminal
+bindsym $mod+Return exec $term -e $shell -c "tmux attach -t mess || tmux new -s mess"
+bindsym $mod+Shift+Return exec $term_float --class floating -e $shell -c "tmux attach -t mess || tmux new -s mess"
+bindsym $mod+Control+Return exec $term -e $shell -c "tmux attach -t neat || tmux new -s neat"
+bindsym $mod+Control+Shift+Return exec $term_float --class floating -e $shell -c "tmux attach -t neat || tmux new -s neat"
+bindsym $mod+Shift+B exec $term -e $shell -c "tmux attach -t code || tmux new -s code"
+
+# toggle tiling / floating
+bindsym $mod+Shift+space floating toggle
+
+# change focus between tiling / floating windows
+bindsym $mod+space focus mode_toggle
+
+# reboot the system
+bindsym $mod+shift+BackSpace exec --no-startup-id prompt "Reboot?" "$reboot"
+
+# STOP/HIDE EVERYTHING:
+bindsym $mod+Shift+Delete exec --no-startup-id pulsemixer --mute ; exec sp pause ; workspace 0; exec $term -e htop ; exec $term -e $FILE
+
+# arrow keys
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+bindsym $mod+h focus left
+bindsym $mod+j focus down
+bindsym $mod+k focus up
+bindsym $mod+l focus right
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+# letter bindings
+
+# kill focused window
+bindsym $mod+Shift+q kill
+
+# setup network
+bindsym $mod+Shift+w exec $term_float --class floating -e $shell -c nmtui
+
+# file browser
+bindsym $mod+Shift+f exec $term_float --class floating -e $shell -c $FILE
+
+# manage audio
+bindsym $mod+Shift+v exec $term_float --class floating -e $shell -c pulsemixer
+
+# start program launcher
+# bindsym $mod+d exec dmenu_colors
+
+set $launcher dmenu_path | fzf --inline-info | xargs i3-msg exec
+bindsym $mod+d exec $term --config-file ~/.config/alacritty/launcher.toml -o window.dimensions.lines=10 -o window.dimensions.columns=40 --title 'launcher' -e $shell -c "$launcher"
+
+# shortcuts launcher
+set $shortcut_launcher stest -flx $HOME/.shortcuts | fzf --inline-info | awk -v DIR=$HOME/.shortcuts/ '{ print DIR\$1 }' | xargs i3-msg exec
+bindsym $mod+s exec $term --config-file ~/.config/alacritty/launcher.toml -o window.dimensions.lines=10 -o window.dimensions.columns=40 --title 'launcher' -e $shell -c "$shortcut_launcher"
+
+# switch split orientation
+bindsym $mod+t split toggle
+
+# enter fullscreen mode for the focused container
+bindsym $mod+f fullscreen toggle
+
+# change container layout (tabbed, toggle split)
+bindsym $mod+e layout toggle split
+bindsym $mod+w layout tabbed
+
+# focus the parent container
+bindsym $mod+a focus parent
+
+# reload the configuration file
+bindsym $mod+Shift+c reload
+
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $mod+Shift+r restart
+
+# exit i3 (logs you out of your X session)
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+
+# change keyboard layout
+bindsym $mod+Shift+k exec $python /home/lu1sd4/.scripts/list_prompt.py /home/lu1sd4/.config/shortcuts/keyboard.yml
+
+# Move workspace
+bindsym $mod+m move workspace to output next
+
+# enter resize mode
+bindsym $mod+r mode "resize"
+
+# resize window (you can also use the mouse for that)
+mode "resize" {
+        bindsym j resize shrink width 10 px or 10 ppt
+        bindsym k resize grow height 10 px or 10 ppt
+        bindsym l resize shrink height 10 px or 10 ppt
+        bindsym ntilde resize grow width 10 px or 10 ppt
+
+        # same bindings, but for the arrow keys
+        bindsym Left resize shrink width 10 px or 10 ppt
+        bindsym Down resize grow height 10 px or 10 ppt
+        bindsym Up resize shrink height 10 px or 10 ppt
+        bindsym Right resize grow width 10 px or 10 ppt
+
+        # back to normal: Enter or Escape
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
+bindsym $mod+z gaps outer current plus 5
+bindsym $mod+Shift+z gaps outer current minus 5
+bindsym $mod+n gaps inner current plus 5
+bindsym $mod+Shift+n gaps inner current minus 5
+
+bindsym $mod+x exec --no-startup-id sp pause ; exec --no-startup-id lock
+bindsym $mod+Shift+x exec --no-startup-id prompt "Shutdown?" "$shutdown"
+
+bindsym $mod+c exec --no-startup-id $EDITOR
+
+bindsym $mod+b exec --no-startup-id $term --class floating -e $shell -c bluetoothctl
+
+# Workspace stuff
+
+set $ws1 "1"
+set $ws2 "2"
+set $ws3 "3"
+set $ws4 "4"
+set $ws5 "5"
+set $ws6 "6"
+set $ws7 "7"
+set $ws8 "8"
+set $ws9 "9"
+set $ws10 "10"
+
+# switch to workspace
+bindsym $mod+1		workspace $ws1
+bindsym $mod+2		workspace $ws2
+bindsym $mod+3		workspace $ws3
+bindsym $mod+4		workspace $ws4
+bindsym $mod+5		workspace $ws5
+bindsym $mod+6		workspace $ws6
+bindsym $mod+7		workspace $ws7
+bindsym $mod+8		workspace $ws8
+bindsym $mod+9		workspace $ws9
+bindsym $mod+0		workspace $ws10
+
+# move focused container to workspace
+bindsym $mod+Shift+1	move container to workspace $ws1
+bindsym $mod+Shift+2	move container to workspace $ws2
+bindsym $mod+Shift+3	move container to workspace $ws3
+bindsym $mod+Shift+4	move container to workspace $ws4
+bindsym $mod+Shift+5	move container to workspace $ws5
+bindsym $mod+Shift+6	move container to workspace $ws6
+bindsym $mod+Shift+7	move container to workspace $ws7
+bindsym $mod+Shift+8	move container to workspace $ws8
+bindsym $mod+Shift+9	move container to workspace $ws9
+bindsym $mod+Shift+0  move container to workspace $ws10
+
+# Special keys
+
+# media keys
+bindsym $mod+p exec --no-startup-id playerctl play-pause
+bindsym $mod+period exec --no-startup-id playerctl next
+bindsym $mod+comma exec --no-startup-id playerctl previous
+bindsym $mod+Shift+s exec --no-startup-id spotify
+
+bindsym XF86AudioPlay exec --no-startup-id playerctl play-pause
+bindsym XF86AudioNext exec --no-startup-id playerctl next
+bindsym XF86AudioPrev exec --no-startup-id playerctl previous
+
+bindsym XF86AudioRaiseVolume exec --no-startup-id pulsemixer --change-volume +5
+bindsym XF86AudioLowerVolume exec --no-startup-id pulsemixer --change-volume -5
+bindsym XF86AudioMute exec --no-startup-id pulsemixer --toggle-mute
+
+# screen brightness
+bindsym XF86MonBrightnessUp exec --no-startup-id light -A 10 # increase screen brightness
+bindsym XF86MonBrightnessDown exec --no-startup-id light -U 10 # decrease screen brightness
+
+# Screenshots
+bindsym Print --release exec "scrot -s /tmp/screenshot-$(date +%F_%T).png -e 'xclip -selection c -t image/png < $f'"
+bindsym Shift+Print exec "scrot /tmp/screenshot-$(date +%F_%T).png -e 'xclip -selection c -t image/png < $f'"
+
+# bar
+exec_always --no-startup-id ~/.config/i3/startup
